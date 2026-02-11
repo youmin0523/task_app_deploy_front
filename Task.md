@@ -2,7 +2,20 @@
 
 ## Revision History
 
-**[Current Revision: v2.10_260211]**
+**[Current Revision: v2.13_260211]**
+
+- **v2.11_260211**: Sidebar Collapsed Auth UI Fix
+  - [front/src/components/Common/Navbar.jsx]
+    - 수정: 데스크탑 사이드바 축소(`Collapsed`) 상태에서 로그인 버튼이 원형 마크(G 마크 또는 프로필 사진)만 나오도록 UI 고도화.
+    - 개선: 로그인 정보(`authData`)에서 프로필 사진(`picture`)을 추출하여 아이콘 대신 표시 기능 추가.
+
+- **v2.12_260211**: Navbar JSX Syntax Error Fix
+  - [front/src/components/Common/Navbar.jsx]
+    - 수정: `return` 내부 주석을 JSX 중괄호(`{ }`)로 래핑하여 문법 에러 해결.
+
+- **v2.13_260211**: Mobile Header Sidebar trigger restoration
+  - [front/src/components/Common/Navbar.jsx]
+    - 복구: 실수로 누락된 `handleHeaderTodoClick` 함수를 복구하여 모바일 상단 아이콘 클릭 시 사이드바 열림 기능 정상화.
 
 - **v1.0_260129**: Dashboard Layout & Sidebar Animation
   - [front/src/components/Common/Navbar.jsx]
@@ -94,7 +107,11 @@
     - **[Refactor]**: 사용자 피드백 반영하여 `Main Menu`는 다시 **중앙 정렬(my-auto)**로 복원하고, `Todo List`는 하단 영역(메뉴와 로그인 사이 공간)을 별도로 할당받아 배치. 레이아웃 간섭 최소화.
     - **[Refactor]**: 사이드바 레이아웃 구조 전면 개편. **Flex Spacer**(`flex-1`)를 상단과 하단에 각각 배치하여 `Main Menu`를 완벽하게 수직 중앙에 고정(Centering). Todo List는 하단 Spacer 내부(`absolute overlay`)에 배치하여, 내용이 길어져도 메뉴 위치에 영향을 주지 않도록 격리(Isolation).
 
-- **v2.10_260211**: Mobile UX Optimization & Safety
+- **v2.11_260211**: Sidebar Collapsed Auth UI Fix
+  - [front/src/components/Common/Navbar.jsx]
+    - 축소 모드(`Collapsed`) 대응: 로그인 버튼이 긴 형태에서 원형 아이콘 형태로 동적 전환되도록 수정.
+    - 프로필 연동: 구글 프로필 이미지(`picture`)가 있을 경우 `FcGoogle` 대신 사용자 이미지를 노출.
+
   - [front/src/components/Common/Navbar.jsx]
     - **[Fix] Responsive Navbar**: 1024px 이하 모바일 화면에서 무조건 펼침 상태(Expanded)를 유지하도록 CSS 분기 처리 수정. (기존에는 데스크탑의 Collapsed 상태가 모바일에 영향을 주어 글자가 깨지는 현상 발생)
     - **[New] Mobile Header Popup**: 모바일 헤더의 `Today's Todo` 및 `Tomorrow's Todo` 아이콘에 데스크탑과 동일한 **Neon Style Hover Popup** 기능 추가. (클릭하지 않고도 할 일 목록 미리보기 가능)

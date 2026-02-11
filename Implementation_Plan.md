@@ -1,6 +1,6 @@
 # Implementation Plan & System Architecture
 
-**[Current Revision: v2.10_260211]**
+**[Current Revision: v2.11_260211]**
 
 ## Revision History
 
@@ -61,6 +61,9 @@
 - **v2.10_260211**: Mobile UX Optimization & Safety
   - [front/src/components/Common/Navbar.jsx]: `Mobile Header Popup` 및 `Logout Confirmation Modal` 구현.
 
+- **v2.11_260211**: Sidebar Collapsed Auth UI Fix
+  - [front/src/components/Common/Navbar.jsx]: 축소 상태에서의 로그인 버튼 디자인 보완 및 프로필 이미지 연동.
+
 ---
 
 ## 1. System Overview
@@ -110,14 +113,16 @@ graph TD
 
 주요 데이터 흐름을 추적하여 버그 발생 지점을 사전에 파악합니다.
 
-| 변수명 (Variable)       | 생성 위치 (Origin)        | 변경/가공 로직 (Mutation)                             | 참조/최종 목적지 (Destination)      | 비고 (Note)            |
-| :---------------------- | :------------------------ | :---------------------------------------------------- | :---------------------------------- | :--------------------- |
-| **userId (sub)**        | `GoogleLogin` (Auth)      | `jwtDecode` -> `authSlice` (Redux)                    | `ItemPanel.jsx` (API Request Param) | **Data Isolation Key** |
-| **isSidebarOpen**       | `Navbar.jsx` (State)      | `toggleSidebar` (Click), `Resize` (Window)            | `nav` className (CSS Visibility)    | Mobile/Tablet Toggle   |
-| **getTasksData**        | `apiSlice` (Redux)        | `fetchGetItem` (Async API Call)                       | `ItemPanel.jsx` (Rendering List)    | `null` Check Essential |
-| **filteredTasks**       | `ItemPanel.jsx` (Derived) | `filter(isCompleted)` -> `filter(isImportant)`        | `Item.jsx` (Map Render)             | Filtering Logic        |
-| **isLogoutConfirmOpen** | `Navbar.jsx` (State)      | `handleLogoutClick` (Open) -> `confirmLogout` (Close) | `Modal UI` (Conditional Render)     | **Safety Guard**       |
-| **isTodayOpen**         | `Navbar.jsx` (State)      | `setIsTodayOpen` (Toggle)                             | `Today's Todo List` (Collapse)      | UX Toggle              |
+| 변수명 (Variable) | 생성 위치 (Origin)   | 변경/가공 로직 (Mutation)          | 참조/최종 목적지 (Destination)      | 비고 (Note)            |
+| :---------------- | :------------------- | :--------------------------------- | :---------------------------------- | :--------------------- |
+| **userId (sub)**  | `GoogleLogin` (Auth) | `jwtDecode` -> `authSlice` (Redux) | `ItemPanel.jsx` (API Request Param) | **Data Isolation Key** |
+| **picture**       | `GoogleLogin` (Auth) | `jwtDecode` -> `authSlice` (Redux) | `Navbar.jsx` (Sidebar Avatar)       | **Profile UI**         |
+
+| **isSidebarOpen** | `Navbar.jsx` (State) | `toggleSidebar` (Click), `Resize` (Window) | `nav` className (CSS Visibility) | Mobile/Tablet Toggle |
+| **getTasksData** | `apiSlice` (Redux) | `fetchGetItem` (Async API Call) | `ItemPanel.jsx` (Rendering List) | `null` Check Essential |
+| **filteredTasks** | `ItemPanel.jsx` (Derived) | `filter(isCompleted)` -> `filter(isImportant)` | `Item.jsx` (Map Render) | Filtering Logic |
+| **isLogoutConfirmOpen** | `Navbar.jsx` (State) | `handleLogoutClick` (Open) -> `confirmLogout` (Close) | `Modal UI` (Conditional Render) | **Safety Guard** |
+| **isTodayOpen** | `Navbar.jsx` (State) | `setIsTodayOpen` (Toggle) | `Today's Todo List` (Collapse) | UX Toggle |
 
 ### 2.3 Execution Flow Map (Critical Path)
 

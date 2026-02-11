@@ -36,7 +36,11 @@ const Navbar = () => {
 
   const dispatch = useDispatch();
   const state = useSelector((state) => state.auth.authData);
-  const { name } = state || {};
+  // //! [Original Code] name만 추출
+  // const { name } = state || {};
+
+  // //* [Modified Code] 프로필 이미지(picture)도 함께 추출하여 사이드바 UI에 반영
+  const { name, picture } = state || {};
 
   //  !: 부정 !!name: name 값이 있는지 엄격히 체크 -> name이 존재하면 true, null이면 false
   const [isAuth, setIsAuth] = useState(!!name);
@@ -192,7 +196,6 @@ const Navbar = () => {
     setIsSidebarOpen(true);
     if (type === 'today') {
       setIsTodayOpen(true);
-      // Optional: Scroll to section if needed, but opening is enough for now
     } else {
       setIsTomorrowOpen(true);
     }
@@ -200,11 +203,15 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Logout Confirmation Modal */}
+      {
+        // //* Logout Confirmation Modal
+      }
       {isLogoutConfirmOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="bg-[#1e1e1e] border border-gray-700 rounded-xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all scale-100 opacity-100">
-            {/* Header */}
+            {
+              // //* Header
+            }
             <div className="bg-gradient-to-r from-red-900/40 to-[#1e1e1e] px-6 py-4 border-b border-gray-700 flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-red-900/30 flex items-center justify-center shrink-0">
                 <MdLogout className="w-5 h-5 text-red-400" />
@@ -222,7 +229,9 @@ const Navbar = () => {
               </p>
             </div>
 
-            {/* Footer / Actions */}
+            {
+              // //* Footer / Actions
+            }
             <div className="flex items-center gap-3 px-6 pb-6">
               <button
                 onClick={cancelLogout}
@@ -241,8 +250,10 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* //* [Modified Code] 모바일/태블릿용 햄버거 메뉴 버튼 */}
-      {/* 화면 좌측 상단에 고정되어 메뉴를 열 수 있는 트리거 역할 */}
+      {
+        // //* [Modified Code] 모바일/태블릿용 햄버거 메뉴 버튼
+        // 화면 좌측 상단에 고정되어 메뉴를 열 수 있는 트리거 역할
+      }
       <header className="fixed top-0 left-0 w-full h-14 bg-[#212121] border-b border-gray-700 flex items-center justify-between px-4 z-40 lg:hidden">
         {/* Left: Sidebar Toggle */}
         <button onClick={toggleSidebar} className="text-white p-1">
@@ -263,8 +274,10 @@ const Navbar = () => {
 
         {/* Right: Todos + Login/Profile Action */}
         <div className="flex items-center gap-3 relative">
-          {/* // //* [Added Code] Mobile Header Todo Indicators */}
-          {/* // 모바일/태블릿에서 상단 네비게이션에 Today/Tomorrow 투두 상태 표시 */}
+          {
+            // //* [Added Code] Mobile Header Todo Indicators
+            // 모바일/태블릿에서 상단 네비게이션에 Today/Tomorrow 투두 상태 표시
+          }
           <div
             className={`flex items-center gap-3 mr-1 transition-opacity duration-300 ${isSidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
           >
@@ -460,14 +473,16 @@ const Navbar = () => {
       {/* Spacer for Mobile Header */}
       <div className="w-full h-14 lg:hidden"></div>
 
-      {/* //* [Modified Code] Sidebar (Mini Sidebar Architecture) */}
-      {/* // //* [Modified Code] Responsive Logic: Full Sidebar OR Hidden */}
-      {/* // 애매한 '아이콘만 남는 모드(Mini Sidebar)'를 제거함. */}
-      {/* // Large Screen(lg): 항상 Full Sidebar (w-72) */}
-      {/* // Small Screen: 기본적으로 Hidden -> 토글 시 Full Sidebar 등장 */}
-      {/* // //* [Restored & Refined Code] Responsive Sidebar Architecture */}
-      {/* // Mobile: Off-Canvas (Hidden <-> w-64 Full) */}
-      {/* // Desktop: Collapsible (w-[70px] Mini <-> w-72 Full) */}
+      {
+        // //* [Modified Code] Sidebar (Mini Sidebar Architecture)
+        // //* [Modified Code] Responsive Logic: Full Sidebar OR Hidden
+        // 애매한 '아이콘만 남는 모드(Mini Sidebar)'를 제거함.
+        // Large Screen(lg): 항상 Full Sidebar (w-72)
+        // Small Screen: 기본적으로 Hidden -> 토글 시 Full Sidebar 등장
+        // //* [Restored & Refined Code] Responsive Sidebar Architecture
+        // Mobile: Off-Canvas (Hidden <-> w-64 Full)
+        // Desktop: Collapsible (w-[70px] Mini <-> w-72 Full)
+      }
       <nav
         className={`bg-[#212121] h-full rounded-r-sm border-r border-gray-500 flex flex-col justify-start items-center 
         fixed top-0 left-0 z-50 py-4 px-4 lg:relative transition-all duration-300 ease-in-out
@@ -500,13 +515,12 @@ const Navbar = () => {
           <MdKeyboardDoubleArrowLeft className="w-6 h-6" />
         </button>
 
-        {/* Logo Section */}
-        {/* // //* [Modified Code] Absolute Position for Logo */}
-        {/* // 상단 고정 위치 지정 */}
-        {/* Logo Section */}
-        {/* // 항상 Full Mode로 표시 */}
-        {/* Logo Section */}
-        {/* // Desktop: Collapsed 상태일 때 클릭하면 확장되도록 로직 복구 */}
+        {
+          // //* [Modified Code] Absolute Position for Logo
+          // 상단 고정 위치 지정
+          // //* 항상 Full Mode로 표시
+          // //* Desktop: Collapsed 상태일 때 클릭하면 확장되도록 로직 복구
+        }
         <div
           className={`logo-wrapper flex w-full items-center gap-4 transition-all duration-300 z-10 shrink-0 
             justify-center py-6 
@@ -525,13 +539,13 @@ const Navbar = () => {
           </h2>
         </div>
 
-        {/* Menu List */}
-        {/* // //* [Modified Code] Flexbox Vertical Layout Structure */}
-        {/* // 기존의 Absolute Positioning을 제거하고, 전체를 Flex Column으로 감싸서 */}
-        {/* // 화면 높이가 줄어들어도 요소들이 겹치지 않고 자연스럽게 스택되거나 스크롤되도록 변경함. */}
-        {/* // 로고와의 간격을 넓히기 위해 pt-[60px] -> pt-[100px]로 변경. */}
-        {/* Menu List */}
-        {/* // Collapsed 모드 대비 상단 여백 동적 조정 */}
+        {
+          // //* [Modified Code] Flexbox Vertical Layout Structure
+          // 기존의 Absolute Positioning을 제거하고, 전체를 Flex Column으로 감싸서
+          // 화면 높이가 줄어들어도 요소들이 겹치지 않고 자연스럽게 스택되거나 스크롤되도록 변경함.
+          // 로고와의 간격을 넓히기 위해 pt-[60px] -> pt-[100px]로 변경.
+          // //* Collapsed 모드 대비 상단 여백 동적 조정
+        }
         <div
           className={`flex flex-col w-full h-full pb-6 gap-4 pt-2 ${isDesktopOpen ? 'lg:pt-2' : 'lg:pt-[100px]'}`}
         >
@@ -856,21 +870,71 @@ const Navbar = () => {
           <div className="w-full shrink-0 flex justify-center z-10 mt-auto">
             {isAuth ? (
               <div className="auth-button w-full flex items-center justify-center">
+                {
+                  // //! [Original Code] 정적인 형태의 로그인 버튼 (축소 시에도 형태 유지되어 가독성 저하)
+                  // //! <button
+                  // //!   className="group flex items-center bg-gray-300 text-gray-900 py-3 rounded-md transition-all duration-300 w-fit px-6 gap-2 justify-center shadow-md hover:bg-red-100"
+                  // //!   onClick={handleLogoutClick}
+                  // //!   title="Logout"
+                  // //! >
+                  // //!   <div className="flex items-center gap-2 group-hover:invisible">
+                  // //!     <FcGoogle className="w-5 h-5 shrink-0" />
+                  // //!     <span className="block text-sm truncate font-medium">
+                  // //!       {name ? `${name}님 환영합니다!` : 'Logout'}
+                  // //!     </span>
+                  // //!   </div>
+                  // //!   <div className="absolute inset-0 flex items-center justify-center gap-2 text-red-600 font-bold invisible group-hover:visible">
+                  // //!     <MdLogout className="w-5 h-5 shrink-0" />
+                  // //!     <span
+                  // //!       className={`block text-sm ${isDesktopOpen ? 'block' : 'hidden'}`}
+                  // //!     >
+                  // //!       Logout
+                  // //!     </span>
+                  // //!   </div>
+                  // //! </button>
+                  // //* [Modified Code] Collapsed 상태 대응: 축소 시 원형 버튼으로 전환 및 프로필 이미지(있을 시) 노출
+                }
                 <button
-                  className="group flex items-center bg-gray-300 text-gray-900 py-3 rounded-md transition-all duration-300 w-fit px-6 gap-2 justify-center shadow-md hover:bg-red-100"
+                  className={`group flex items-center bg-gray-300 text-gray-900 transition-all duration-300 justify-center shadow-md hover:bg-red-100 relative
+    ${isDesktopOpen ? 'py-3 rounded-md w-fit px-6 gap-2' : 'w-10 h-10 rounded-full mx-auto'}`}
                   onClick={handleLogoutClick}
                   title="Logout"
                 >
-                  <div className="flex items-center gap-2 group-hover:invisible">
-                    <FcGoogle className="w-5 h-5 shrink-0" />
-                    <span className="block text-sm truncate font-medium">
+                  {
+                    // //* 정적 상태: 아이콘/프로필 + 이름(확장 시에만)
+                  }
+                  <div
+                    className={`flex items-center gap-2 group-hover:invisible ${!isDesktopOpen ? 'justify-center' : ''}`}
+                  >
+                    {picture ? (
+                      <img
+                        src={picture}
+                        alt="profile"
+                        className={`${isDesktopOpen ? 'w-5 h-5' : 'w-6 h-6'} rounded-full shrink-0 object-cover`}
+                      />
+                    ) : (
+                      <FcGoogle
+                        className={`${isDesktopOpen ? 'w-5 h-5' : 'w-6 h-6'} shrink-0`}
+                      />
+                    )}
+                    <span
+                      className={`text-sm truncate font-medium ${isDesktopOpen ? 'block' : 'hidden'}`}
+                    >
                       {name ? `${name}님 환영합니다!` : 'Logout'}
                     </span>
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center gap-2 text-red-600 font-bold invisible group-hover:visible">
-                    <MdLogout className="w-5 h-5 shrink-0" />
+
+                  {
+                    // //* 호버 상태: 로그아웃 아이콘으로 전환
+                  }
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center gap-2 text-red-600 font-bold invisible group-hover:visible ${!isDesktopOpen ? 'bg-red-100 rounded-full' : ''}`}
+                  >
+                    <MdLogout
+                      className={`${isDesktopOpen ? 'w-5 h-5' : 'w-6 h-6'} shrink-0`}
+                    />
                     <span
-                      className={`block text-sm ${isDesktopOpen ? 'block' : 'hidden'}`}
+                      className={`text-sm ${isDesktopOpen ? 'block' : 'hidden'}`}
                     >
                       Logout
                     </span>
