@@ -63,7 +63,7 @@ const Modal = () => {
     } else {
       setFormData({
         title: '',
-        description: '',
+        description: '- ',
         date: '',
         isCompleted: false,
         isImportant: false,
@@ -81,6 +81,29 @@ const Modal = () => {
       // input의 타입이 checked일 경우, checked의 값으로 업데이트, 아니면 value의 값으로 업데이트
       [name]: type === 'checkbox' ? checked : value,
     }));
+  };
+
+  // //* [Modified Code] Description 입력 시 엔터(Enter)를 누르면 자동으로 글머리 기호(- ) 추가
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const { selectionStart, selectionEnd, value } = e.target;
+      const newValue =
+        value.substring(0, selectionStart) +
+        '\n- ' +
+        value.substring(selectionEnd);
+
+      setFormData((prev) => ({
+        ...prev,
+        description: newValue,
+      }));
+
+      // 커서 위치 보정을 위해 setTimeout 사용 (React re-render 이후 실행)
+      setTimeout(() => {
+        const target = e.target;
+        target.selectionStart = target.selectionEnd = selectionStart + 3; // '\n- ' 길이만큼 이동
+      }, 0);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -152,6 +175,7 @@ const Modal = () => {
               value={formData.description}
               placeholder="내용을 입력해주세요..."
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               {...(modalType === 'details' && { disabled: true })}
             ></textarea>
           </div>

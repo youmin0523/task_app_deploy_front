@@ -1,4 +1,4 @@
-const DOMAIN = 'http://localhost:8000';
+const DOMAIN = 'http://100.48.98.16';
 
 const GET_TASKS_API_URL = `${DOMAIN}/get_tasks`;
 const POST_TASK_API_URL = `${DOMAIN}/post_task`;

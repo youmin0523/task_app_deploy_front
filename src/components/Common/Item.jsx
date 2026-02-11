@@ -131,7 +131,7 @@ const Item = ({ task }) => {
             </div>
           </div>
 
-          <p className="text-gray-300 h-[4.5rem] overflow-hidden">
+          <p className="text-gray-300 h-[4.5rem] overflow-hidden whitespace-pre-line">
             {cutOverText(description, 60, '...')}
           </p>
         </div>
@@ -144,14 +144,14 @@ const Item = ({ task }) => {
             <div className="flex gap-2 flex-wrap pb-1">
               {iscompleted ? (
                 <button
-                  className="block py-1 px-3 bg-green-400 text-xs text-white rounded-md whitespace-nowrap"
+                  className="block py-1 px-3 bg-green-400 text-xs text-white rounded-md whitespace-nowrap w-24 text-center"
                   onClick={changeCompleted}
                 >
                   Completed
                 </button>
               ) : (
                 <button
-                  className="block py-1 px-3 bg-cyan-500 text-xs text-white rounded-md whitespace-nowrap"
+                  className="block py-1 px-3 bg-cyan-500 text-xs text-white rounded-md whitespace-nowrap w-24 text-center"
                   onClick={changeCompleted}
                 >
                   inCompleted

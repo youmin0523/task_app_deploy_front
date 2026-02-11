@@ -108,7 +108,7 @@ const Navbar = () => {
         >
           <div className="logo shrink-0 scale-75"></div>
           <h2 className="font-bold text-xl tracking-wider text-white">
-            <Link to="/">MARSHALL</Link>
+            <Link to="/">YOUMINSU</Link>
           </h2>
         </div>
 
@@ -233,7 +233,7 @@ const Navbar = () => {
               isDesktopOpen ? 'opacity-100' : 'opacity-0 hidden'
             }`}
           >
-            <Link to="/">MARSHALL</Link>
+            <Link to="/">YOUMINSU</Link>
           </h2>
         </div>
 
@@ -292,7 +292,7 @@ const Navbar = () => {
               <button
                 className={`group flex items-center bg-gray-300 text-gray-900 py-3 rounded-md transition-all duration-300 ${
                   isDesktopOpen
-                    ? 'w-full px-4 gap-2 justify-start'
+                    ? 'w-full px-4 gap-2 justify-center'
                     : 'w-10 h-10 px-0 justify-center rounded-full mx-auto'
                 } hover:bg-red-100`}
                 onClick={handleLogoutClick}
@@ -310,7 +310,7 @@ const Navbar = () => {
 
                 {/* Text Swap: Hover 시 이름 -> Logout (Expanded 모드 전용) */}
                 <span
-                  className={`${isDesktopOpen ? 'block' : 'hidden'} text-sm truncate flex-1 text-left`}
+                  className={`${isDesktopOpen ? 'block' : 'hidden'} text-sm truncate text-center`}
                 >
                   <span className="group-hover:hidden font-medium">
                     {name ? `${name}님` : 'Logout'}

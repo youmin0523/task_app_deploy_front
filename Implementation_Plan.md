@@ -1,6 +1,6 @@
 # Implementation Plan & System Architecture
 
-**[Current Revision: v2.1_260206]**
+**[Current Revision: v2.7_260211]**
 
 ## Revision History
 
@@ -39,6 +39,23 @@
   - [front/src/components/Common/Navbar.jsx]
     - 수정: 로고 Wrapper 중앙 정렬 (`justify-center`)
     - 수정: 메뉴 리스트 수직 중앙 정렬 (`mt-8` -> `my-auto`) 및 텍스트 왼쪽 정렬 유지
+
+- **v2.2_260211**: Login Button UX Polish
+  - [front/src/components/Common/Navbar.jsx]
+    - 개선: 로그인 버튼 내부 컨텐츠(아이콘+텍스트) 중앙 정렬 처리 (`justify-center`, `text-center`)
+
+- **v2.3_260211**: Auto-Bullet & Line Break
+  - [front/src/components/Common/Modal.jsx]: `HandleKeyDown`에서 `Enter` 입력 시 `\n- ` 자동 삽입.
+  - [front/src/components/Common/Item.jsx]: `whitespace-pre-line` 적용으로 카드 뷰에서 리스트 구조 활성화.
+
+- **v2.4_260211**: UI Uniformity
+  - [front/src/components/Common/AddItem.jsx]: `h-auto min-h-[25vh]` 적용.
+
+- **v2.6_260211**: Preventing Layout Shift (CLS)
+  - [front/src/components/Common/Item.jsx]: `Completed/InCompleted` 버튼 고정 너비(`w-24`) 적용.
+
+- **v2.7_260211**: Rebranding
+  - [front/src/components/Common/Navbar.jsx]: `MARSHALL` -> `YOUMINSU` 텍스트 변경.
 
 ---
 
@@ -167,14 +184,17 @@ graph TD
 - **Bottom Fixed Auth**: `mt-auto` 속성을 사용하여 로그인 버튼을 하단에 강제 고정.
 - **Padding**: `py-10 px-4`를 기본값으로 적용하여 모바일 상단 답답함 해소.
 
-- **Padding**: `py-10 px-4`를 기본값으로 적용하여 모바일 상단 답답함 해소.
-
 #### 3. Sidebar Alignment Update (v2.1)
 
 - **Vertical Alignment**: 메뉴 리스트(`ul`)에 `my-auto`를 적용하여 사이드바 높이의 중앙에 자동 배치.
 - **Horizontal Alignment**:
   - Logo: `justify-center` (Identity 강조)
   - Menu Items: `justify-start` (가독성 확보를 위한 텍스트 왼쪽 정렬)
+
+#### 4. Login Button UX Improvement (v2.2)
+
+- **Central Alignment**: 로그인 버튼 내의 텍스트와 아이콘을 시각적으로 중앙 정렬 (`justify-center`, `text-center`).
+- **Content Flow**: 텍스트의 `flex-1` 속성을 제거하여 아이콘과 텍스트가 하나의 그룹으로 중앙에 위치하도록 개선.
 
 ### [Module B] Item Management (Item.jsx, ItemPanel.jsx)
 
@@ -188,13 +208,28 @@ graph TD
   - `768px ~ 1023px`: 2열 (`w-1/2`)
   - `> 1024px`: 3열 (`w-1/3`) -> 기존 고정폭(`w-1/3`) 문제 해결.
 
-#### 2. Item Card Anatomy (v1.0)
+#### 2. Auto-Format Description (v2.3)
+
+- **Input UX**: `Modal.jsx`에서 `Enter` 키를 감지하여 다음 줄에 `- `(글머리 기호)를 자동 생성.
+- **Rendering**: `Item.jsx`의 `p` 태그에 `whitespace-pre-line`을 적용하여 DB에 저장된 줄바꿈(`\n`)이 실제 화면에서도 리스트 형태로 렌더링되도록 개선.
+
+#### 3. Item Card Anatomy (v1.0)
 
 - **Header**: `Title` (강조) + `Date` (보조) + `Detail Button`.
 - **Body**: `Description` (2줄 제한, Ellipsis 처리).
 - **Footer**:
   - Left: `Completed` / `Important` 상태 토글 버튼.
   - Right: `Edit` / `Delete` 아이콘 (Secondary Action).
+
+#### 4. Height Synchronization (v2.4)
+
+- **AddItem Card**: `Item.jsx`와 동일한 `h-auto min-h-[25vh]` 스타일을 적용.
+- **Flex Stretch**: `Flexbox`의 기본 동작(`stretch`)을 활용하여, 같은 행(Row)에 있는 아이템의 내용이 길어지면 `Add Item` 카드도 자동으로 동일한 높이로 늘어나도록 UI 일관성 확보.
+
+#### 5. Layout Shift Prevention (v2.6)
+
+- **Fixed Width Button**: `Completed`와 `InCompleted` 텍스트의 길이가 달라 토글 시 버튼 너비가 변하고, 이로 인해 이웃한 `Important` 버튼이 밀리는 현상(Layout Shift) 방지.
+- **Solution**: 두 버튼에 `w-24` 및 `text-center`를 적용하여 상태 변화와 무관하게 고정된 공간을 점유하도록 개선.
 
 ---
 
