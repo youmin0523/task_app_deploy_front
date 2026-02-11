@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
-import { closeModal } from '../../redux/slices/modalSlice';
+import { closeModal, openModal } from '../../redux/slices/modalSlice';
+import { MdEditDocument } from 'react-icons/md';
 import {
   fetchGetItem,
   fetchPostItem,
@@ -13,6 +14,13 @@ const Modal = () => {
   const dispatch = useDispatch();
   const handleCloseModal = () => {
     dispatch(closeModal());
+  };
+
+  // //* [Added Code] Switch Modal to Update Mode
+  // 상세 보기(details) 상태에서 바로 수정(update) 상태로 전환하는 핸들러.
+  // [New Feature] 모달을 닫지 않고도 데이터를 유지한 채 수정 UI로 변경.
+  const handleEdit = () => {
+    dispatch(openModal({ modalType: 'update', task }));
   };
 
   const { modalType, task } = useSelector((state) => state.modal);
@@ -212,7 +220,20 @@ const Modal = () => {
               {...(modalType === 'details' && { disabled: true })}
             />
           </div>
-          <div className="submit-btn flex justify-end">
+          <div className="submit-btn flex justify-end gap-2">
+            {/* // //* [Added Code] Edit Button (Only visible in 'details' mode) */}
+            {/* // 상세 보기 모달에서만 노출되는 수정 버튼. 클릭 시 'handleEdit' 호출. */}
+            {modalType === 'details' && (
+              <button
+                type="button"
+                onClick={handleEdit}
+                className="flex items-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors"
+                title="Edit Task"
+              >
+                <MdEditDocument />
+                <span>Edit</span>
+              </button>
+            )}
             <button
               type="submit"
               className={`flex justify-end bg-black py-3 px-6 rounded-md hover:bg-slate-900 ${modalType === 'details' ? 'hidden' : ''}`}

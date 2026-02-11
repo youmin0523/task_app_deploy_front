@@ -144,17 +144,17 @@ const Item = ({ task }) => {
             <div className="flex gap-2 flex-wrap pb-1">
               {iscompleted ? (
                 <button
-                  className="block py-1 px-3 bg-green-400 text-xs text-white rounded-md whitespace-nowrap w-24 text-center"
+                  className="flex items-center justify-center py-1 px-3 bg-green-400 text-xs text-white rounded-md whitespace-nowrap w-24"
                   onClick={changeCompleted}
                 >
                   Completed
                 </button>
               ) : (
                 <button
-                  className="block py-1 px-3 bg-cyan-500 text-xs text-white rounded-md whitespace-nowrap w-24 text-center"
+                  className="flex items-center justify-center py-1 px-3 bg-cyan-500 text-xs text-white rounded-md whitespace-nowrap w-24"
                   onClick={changeCompleted}
                 >
-                  inCompleted
+                  Incomplete
                 </button>
               )}
 

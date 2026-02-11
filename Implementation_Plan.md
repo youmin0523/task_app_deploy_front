@@ -1,6 +1,6 @@
 # Implementation Plan & System Architecture
 
-**[Current Revision: v2.7_260211]**
+**[Current Revision: v2.10_260211]**
 
 ## Revision History
 
@@ -55,7 +55,11 @@
   - [front/src/components/Common/Item.jsx]: `Completed/InCompleted` 버튼 고정 너비(`w-24`) 적용.
 
 - **v2.7_260211**: Rebranding
-  - [front/src/components/Common/Navbar.jsx]: `MARSHALL` -> `YOUMINSU` 텍스트 변경.
+- **v2.9_260211**: Interactive Today's Todo
+  - [front/src/components/Common/Navbar.jsx]: `Detail Modal`, `Quick Complete`, `Toggle Important` 이벤트 핸들러 구현.
+
+- **v2.10_260211**: Mobile UX Optimization & Safety
+  - [front/src/components/Common/Navbar.jsx]: `Mobile Header Popup` 및 `Logout Confirmation Modal` 구현.
 
 ---
 
@@ -106,12 +110,14 @@ graph TD
 
 주요 데이터 흐름을 추적하여 버그 발생 지점을 사전에 파악합니다.
 
-| 변수명 (Variable) | 생성 위치 (Origin)        | 변경/가공 로직 (Mutation)                      | 참조/최종 목적지 (Destination)      | 비고 (Note)            |
-| :---------------- | :------------------------ | :--------------------------------------------- | :---------------------------------- | :--------------------- |
-| **userId (sub)**  | `GoogleLogin` (Auth)      | `jwtDecode` -> `authSlice` (Redux)             | `ItemPanel.jsx` (API Request Param) | **Data Isolation Key** |
-| **isSidebarOpen** | `Navbar.jsx` (State)      | `toggleSidebar` (Click), `Resize` (Window)     | `nav` className (CSS Visibility)    | Mobile/Tablet Toggle   |
-| **getTasksData**  | `apiSlice` (Redux)        | `fetchGetItem` (Async API Call)                | `ItemPanel.jsx` (Rendering List)    | `null` Check Essential |
-| **filteredTasks** | `ItemPanel.jsx` (Derived) | `filter(isCompleted)` -> `filter(isImportant)` | `Item.jsx` (Map Render)             | Filtering Logic        |
+| 변수명 (Variable)       | 생성 위치 (Origin)        | 변경/가공 로직 (Mutation)                             | 참조/최종 목적지 (Destination)      | 비고 (Note)            |
+| :---------------------- | :------------------------ | :---------------------------------------------------- | :---------------------------------- | :--------------------- |
+| **userId (sub)**        | `GoogleLogin` (Auth)      | `jwtDecode` -> `authSlice` (Redux)                    | `ItemPanel.jsx` (API Request Param) | **Data Isolation Key** |
+| **isSidebarOpen**       | `Navbar.jsx` (State)      | `toggleSidebar` (Click), `Resize` (Window)            | `nav` className (CSS Visibility)    | Mobile/Tablet Toggle   |
+| **getTasksData**        | `apiSlice` (Redux)        | `fetchGetItem` (Async API Call)                       | `ItemPanel.jsx` (Rendering List)    | `null` Check Essential |
+| **filteredTasks**       | `ItemPanel.jsx` (Derived) | `filter(isCompleted)` -> `filter(isImportant)`        | `Item.jsx` (Map Render)             | Filtering Logic        |
+| **isLogoutConfirmOpen** | `Navbar.jsx` (State)      | `handleLogoutClick` (Open) -> `confirmLogout` (Close) | `Modal UI` (Conditional Render)     | **Safety Guard**       |
+| **isTodayOpen**         | `Navbar.jsx` (State)      | `setIsTodayOpen` (Toggle)                             | `Today's Todo List` (Collapse)      | UX Toggle              |
 
 ### 2.3 Execution Flow Map (Critical Path)
 
@@ -195,6 +201,19 @@ graph TD
 
 - **Central Alignment**: 로그인 버튼 내의 텍스트와 아이콘을 시각적으로 중앙 정렬 (`justify-center`, `text-center`).
 - **Content Flow**: 텍스트의 `flex-1` 속성을 제거하여 아이콘과 텍스트가 하나의 그룹으로 중앙에 위치하도록 개선.
+  - Menu Items: `justify-start` (가독성 확보를 위한 텍스트 왼쪽 정렬)
+
+#### 5. Today's Todo Widget (v2.8)
+
+- **Concept**: 사이드바의 남는 공간을 활용하여, 오늘 마감해야 할 업무(`date === Today`)를 직관적으로 노출.
+- **Micro-Layout**: `Menu List`와 함께 수직 중앙 정렬(`my-auto`) 그룹으로 묶어 배치.
+- **Responsive Behavior**: 사이드바가 접혔을 때는 과감히 숨기고, 펼쳤을 때만 상세 리스트를 노출하여 정보 과부하 방지.
+- **Visual Cue**: `Impontant` 항목은 빨간 점(Red Dot)으로 강조하여 시선 유도.
+
+#### 6. Mobile UX & Safety (v2.10)
+
+- **Header Hover Popups**: 모바일 환경에서도 상단 네비게이션 아이콘에 마우스를 올리면(또는 롱프레스 시) 할 일 목록을 미리 볼 수 있는 `Neon Style Popup`을 이식. `onClick` 이벤트 버블링 방지(`stopPropagation`) 적용.
+- **Logout Confirmation**: 좁은 모바일 화면에서의 오터치를 방지하기 위해, 로그아웃 시 즉시 실행되지 않고 `Backdrop Blur`가 적용된 **Dark Theme Modal**을 통해 사용자 의사를 재확인.
 
 ### [Module B] Item Management (Item.jsx, ItemPanel.jsx)
 

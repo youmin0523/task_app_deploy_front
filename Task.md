@@ -2,7 +2,7 @@
 
 ## Revision History
 
-**[Current Revision: v2.7_260211]**
+**[Current Revision: v2.10_260211]**
 
 - **v1.0_260129**: Dashboard Layout & Sidebar Animation
   - [front/src/components/Common/Navbar.jsx]
@@ -45,6 +45,12 @@
     - 수정: 로그인 버튼 텍스트와 아이콘 중앙 정렬 (`justify-start` -> `justify-center`)
     - 수정: 텍스트 중앙 정렬 (`text-left` -> `text-center`) 및 `flex-1` 제거로 컨텐츠 중앙 배치
 
+- **v2.9_260211**: Navbar Responsive & UI Fixes
+  - [front/src/components/Common/Navbar.jsx] (Critical)
+    - **수정**: 모바일/태블릿 `Close` 버튼 클릭 불가 버그 해결 (`z-index` 조정)
+    - **복구**: Collapsed 모드 시 `Orb UI` (원형 아이콘 + 팝업) 기능 복구 및 활성화
+    - **개선**: 반응형 동작 정교화 (1024px 기준 Full/Hidden 토글 및 Desktop Collapsible 지원)
+
 - **v2.3_260211**: Auto-Bullet Description
   - [front/src/components/Common/Modal.jsx]
     - 기능 추가: `Add Item` 모달 진입 시 Description 필드에 글머리 기호(`- `) 자동 초기화.
@@ -62,6 +68,37 @@
 
 - **v2.7_260211**: Rebranding (MARSHALL -> YOUMINSU)
   - [front/src/components/Common/Navbar.jsx]: 브랜드 로고 텍스트를 `MARSHALL`에서 `YOUMINSU`로 변경. (모바일 헤더, 데스크탑 사이드바 모두 적용)
+
+- **v2.8_260211**: Today's Todo Section
+  - [front/src/components/Common/Navbar.jsx]
+    - 기능 추가: 사이드바 Important 메뉴 하단에 **Today's Todo** 섹션 추가.
+    - 로직 구현: `api.getItemData`를 참조하여 오늘 날짜(`YYYY-MM-DD`)와 일치하고 미완료(`!isCompleted`)인 항목만 필터링.
+    - 반응형 동작: 사이드바가 확장된 상태(`isDesktopOpen`)에서만 노출, 축소 시 숨김.
+    - 레이아웃: 메뉴 리스트와 Today 섹션을 하나의 `Vertical Wrapper`로 묶어(`my-auto`) 사이드바 수직 중앙에 배치.
+
+- **v2.9_260211**: Interactive Today's Todo
+  - [front/src/components/Common/Navbar.jsx]
+    - 기능 개선: `Today's Todo` 섹션 내 각 항목에 인터랙션 추가.
+      1. **Click to Detail**: 항목 클릭 시 `Modal` (Detail Type) 호출.
+      2. **Quick Complete**: 커스텀 체크박스 클릭 시 즉시 완료(`isCompleted: true`) 처리.
+      3. **Toggle Important**: 붉은 점(Red Dot) 클릭 시 중요 상태(`isImportant`) 토글.
+    - 스타일 개선: 섹션 헤더 및 카운트 폰트 사이즈 확대, 체크박스 디자인 고도화(Hover Effect).
+    - **[Fix]**: 기존 로그인(Auth) 섹션이 제거되지 않고 정상 유지되도록 코드 복원.
+    - **[Fix]**: `Important Toggle` 시 발생하는 API 에러("중요 표시 변경 실패") 해결 (Payload 구조 최적화).
+    - **[New]**: 상세 모달(`Details`) 내에서 즉시 수정(`Edit`) 모드로 전환할 수 있는 버튼 추가.
+    - **[New]**: `Today's Todo` 리스트에서 중요하지 않은 항목도 클릭 한 번으로 `Important` 상태로 변경 가능하도록 UI 개선 (Outline Circle).
+    - **[Refactor]**: `Navbar.jsx` 및 `Modal.jsx` 내의 모든 변경 사항에 대해 [Original Code] 보존 및 [Modified Code] 설명 주석 추가 (Better Comment Protocol 준수).
+    - **[New]**: `Tomorrow's Todo` 섹션 추가. `Today's Todo` 하단에 동일한 스타일과 기능을 가진 내일 할 일 목록을 표시하여 업무 흐름 연결성 강화.
+    - **[New]**: `Today's Todo` 및 `Tomorrow's Todo` 섹션에 **접침/펼침(Collapsible)** 기능 구현. 각 섹션 헤더 클릭 시 리스트 표시 여부 토글, 화살표 아이콘으로 상태 시각화.
+    - **[Refactor]**: 사이드바 레이아웃 안정화. 중앙 정렬(`my-auto`)을 제거하고 상단 정렬(`mt-6`)로 변경하여, Todo 섹션 확장 시 상단 메뉴가 밀리는 현상(Layout Shift) 제거. 스크롤 기능(`overflow-y-auto`) 추가.
+    - **[Refactor]**: 사용자 피드백 반영하여 `Main Menu`는 다시 **중앙 정렬(my-auto)**로 복원하고, `Todo List`는 하단 영역(메뉴와 로그인 사이 공간)을 별도로 할당받아 배치. 레이아웃 간섭 최소화.
+    - **[Refactor]**: 사이드바 레이아웃 구조 전면 개편. **Flex Spacer**(`flex-1`)를 상단과 하단에 각각 배치하여 `Main Menu`를 완벽하게 수직 중앙에 고정(Centering). Todo List는 하단 Spacer 내부(`absolute overlay`)에 배치하여, 내용이 길어져도 메뉴 위치에 영향을 주지 않도록 격리(Isolation).
+
+- **v2.10_260211**: Mobile UX Optimization & Safety
+  - [front/src/components/Common/Navbar.jsx]
+    - **[Fix] Responsive Navbar**: 1024px 이하 모바일 화면에서 무조건 펼침 상태(Expanded)를 유지하도록 CSS 분기 처리 수정. (기존에는 데스크탑의 Collapsed 상태가 모바일에 영향을 주어 글자가 깨지는 현상 발생)
+    - **[New] Mobile Header Popup**: 모바일 헤더의 `Today's Todo` 및 `Tomorrow's Todo` 아이콘에 데스크탑과 동일한 **Neon Style Hover Popup** 기능 추가. (클릭하지 않고도 할 일 목록 미리보기 가능)
+    - **[New] Logout Confirmation**: 로그아웃 버튼 클릭 시 즉시 로그아웃되는 대신, **Dark Theme Modal**을 띄워 사용자의 의사를 한 번 더 확인하도록 안전장치 마련. (오터치 방지)
 
 ---
 
