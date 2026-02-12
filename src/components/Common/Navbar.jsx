@@ -33,8 +33,6 @@ const Navbar = () => {
   const isActive = (location) => path.pathname === location;
 
   const googleClientId = import.meta.env.VITE_AUTH_CLIENT_ID;
-  // //* [Debug Code] 배포 환경에서 실제 로드된 클라이언트 ID 확인용
-  console.log('[DEBUG] Google Client ID:', googleClientId);
 
   const dispatch = useDispatch();
   const state = useSelector((state) => state.auth.authData);
