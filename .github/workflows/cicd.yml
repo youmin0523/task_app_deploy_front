@@ -14,10 +14,10 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
       - name: Create env file
+        env:
+          VITE_AUTH_CLIENT_ID: ${{ secrets.VITE_AUTH_CLIENT_ID }}
         run: |
-          touch .env
-          # VITE 앞에 " "뺌
-          echo VITE_AUTH_CLIENT_ID=${{ secrets.VITE_AUTH_CLIENT_ID }} > .env
+          echo "VITE_AUTH_CLIENT_ID=$VITE_AUTH_CLIENT_ID" > .env
       - name: Sign in to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
