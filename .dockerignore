@@ -1,5 +1,5 @@
 node_modules
 .git
-.env
+# .env  <-- [Modified] 환경 변수 주입을 위해 무시 대상에서 제외
 .dockerignore
 Dockerfile
