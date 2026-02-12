@@ -158,7 +158,7 @@ const Modal = () => {
 
   return (
     <div className="modal fixed bg-black bg-opacity-50 w-full h-full left-0 top-0 z-50 flex justify-center items-center">
-      <div className="form-wrapper bg-gray-700 rounded-md w-1/2 flex flex-col items-center relative p-4">
+      <div className="form-wrapper bg-gray-700 rounded-md w-[95%] sm:w-[80%] md:w-[60%] lg:w-[40%] flex flex-col items-center relative p-6 max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl py-2 border-b border-gray-300 w-fit font-semibold">
           {modalTitle}
         </h2>
@@ -243,7 +243,7 @@ const Modal = () => {
           </div>
         </form>
         <IoMdClose
-          className="absolute right-10 top-10 cursor-pointer"
+          className="absolute right-4 top-4 sm:right-6 sm:top-6 cursor-pointer text-2xl hover:text-red-500 transition-colors"
           onClick={handleCloseModal}
         />
       </div>
