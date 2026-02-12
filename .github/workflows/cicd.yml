@@ -13,13 +13,17 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
+
+      - name: Create env file
+        run: |
+          echo "VITE_AUTH_CLIENT_ID=${{ secrets.VITE_AUTH_CLIENT_ID }}" > .env
+
       - name: Sign in to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build Docker Image
-        run: |
-          docker build \
-            --build-arg VITE_AUTH_CLIENT_ID=${{ secrets.VITE_AUTH_CLIENT_ID }} \
-            -t youminsu/task_app_front_deploy .
+        run: docker build -t youminsu/task_app_front_deploy .
+
       - name: Push Docker Image
         run: docker push youminsu/task_app_front_deploy:latest
 
