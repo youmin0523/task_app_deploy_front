@@ -43,6 +43,7 @@ const Navbar = () => {
 
   // //* [Modified Code] 프로필 이미지(picture)도 함께 추출하여 사이드바 UI에 반영
   const { name, picture } = state || {};
+  console.log(googleClientId);
 
   // //* [Modified Code] useState 대신 name의 존재 여부를 실시간으로 반영 (Derived State)
   // 새로고침 시 Redux 상태가 로드되는 시점에 맞춰 UI가 즉각 반영하도록 수정
