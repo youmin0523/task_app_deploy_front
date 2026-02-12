@@ -15,7 +15,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { navMenus } from '../../utils/naviList';
 import { FcGoogle } from 'react-icons/fc';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '../../redux/slices/authSlice';
@@ -42,8 +42,11 @@ const Navbar = () => {
   // //* [Modified Code] 프로필 이미지(picture)도 함께 추출하여 사이드바 UI에 반영
   const { name, picture } = state || {};
 
-  //  !: 부정 !!name: name 값이 있는지 엄격히 체크 -> name이 존재하면 true, null이면 false
-  const [isAuth, setIsAuth] = useState(!!name);
+  // //* [Modified Code] useState 대신 name의 존재 여부를 실시간으로 반영 (Derived State)
+  // 새로고침 시 Redux 상태가 로드되는 시점에 맞춰 UI가 즉각 반영하도록 수정
+  const isAuth = !!name;
+  // //! [Original Code] useState로 관리하면 초기 렌더링 시점의 값만 유지되는 버그 발생
+  // //! const [isAuth, setIsAuth] = useState(!!name);
 
   // //* [Added Code] Today's Todo Logic
   // 오늘 날짜의 미완료 항목 필터링하여 사이드바에 표시하기 위한 데이터 준비
@@ -157,18 +160,29 @@ const Navbar = () => {
   };
 
   const handleLoginSuccess = useCallback(
-    (credentialResponse) => {
-      console.log(credentialResponse);
+    async (tokenResponse) => {
       try {
-        const decoded = jwtDecode(credentialResponse.credential);
-        dispatch(login({ authData: decoded }));
-        setIsAuth(true);
+        // //* [Added Code] Access Token을 이용해 구글 사용자 정보 가져오기
+        const response = await fetch(
+          'https://www.googleapis.com/oauth2/v3/userinfo',
+          {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          },
+        );
+        const userInfo = await response.json();
+
+        dispatch(login({ authData: userInfo }));
       } catch (error) {
-        console.error('Google Login Error: ', error);
+        console.error('Google Login Info Fetch Error: ', error);
       }
     },
     [dispatch],
   );
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleLoginSuccess,
+    onError: (error) => console.log('Google Login Failed:', error),
+  });
 
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
@@ -178,7 +192,7 @@ const Navbar = () => {
 
   const confirmLogout = () => {
     dispatch(logout());
-    setIsAuth(false);
+    // //* [Modified Code] isAuth가 name을 구독 중이므로 setIsAuth 호출 불필요
     setIsLogoutConfirmOpen(false);
   };
 
@@ -443,15 +457,15 @@ const Navbar = () => {
                   로그인이 필요합니다
                 </div>
                 <div className="flex justify-center">
-                  <GoogleOAuthProvider clientId={googleClientId}>
-                    <GoogleLogin
-                      onSuccess={(res) => {
-                        handleLoginSuccess(res);
-                        setIsLoginPopoverOpen(false);
-                      }}
-                      onError={handleLoginError}
-                    />
-                  </GoogleOAuthProvider>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => googleLogin()}
+                      className="flex justify-center items-center gap-2 bg-white text-gray-700 py-2.5 px-4 rounded-md w-full border border-gray-300 hover:bg-gray-50 transition-all font-medium shadow-sm"
+                    >
+                      <FcGoogle className="w-5 h-5" />
+                      <span className="text-sm">Google로 시작하기</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -895,46 +909,20 @@ const Navbar = () => {
                   // //* [Modified Code] Collapsed 상태 대응: 축소 시 원형 버튼으로 전환 및 프로필 이미지(있을 시) 노출
                 }
                 <button
-                  className={`group flex items-center bg-gray-300 text-gray-900 transition-all duration-300 justify-center shadow-md hover:bg-red-100 relative
-    ${isDesktopOpen ? 'py-3 rounded-md w-fit px-6 gap-2' : 'w-10 h-10 rounded-full mx-auto'}`}
+                  className="group flex items-center bg-gray-300 text-gray-900 py-3 rounded-md transition-all duration-300 w-fit px-6 gap-2 justify-center shadow-md hover:bg-red-100 relative"
                   onClick={handleLogoutClick}
                   title="Logout"
                 >
-                  {
-                    // //* 정적 상태: 아이콘/프로필 + 이름(확장 시에만)
-                  }
-                  <div
-                    className={`flex items-center gap-2 group-hover:invisible ${!isDesktopOpen ? 'justify-center' : ''}`}
-                  >
-                    {picture ? (
-                      <img
-                        src={picture}
-                        alt="profile"
-                        className={`${isDesktopOpen ? 'w-5 h-5' : 'w-6 h-6'} rounded-full shrink-0 object-cover`}
-                      />
-                    ) : (
-                      <FcGoogle
-                        className={`${isDesktopOpen ? 'w-5 h-5' : 'w-6 h-6'} shrink-0`}
-                      />
-                    )}
-                    <span
-                      className={`text-sm truncate font-medium ${isDesktopOpen ? 'block' : 'hidden'}`}
-                    >
+                  <div className="flex items-center gap-2 group-hover:invisible">
+                    <FcGoogle className="w-5 h-5 shrink-0" />
+                    <span className="block text-sm truncate font-medium">
                       {name ? `${name}님 환영합니다!` : 'Logout'}
                     </span>
                   </div>
-
-                  {
-                    // //* 호버 상태: 로그아웃 아이콘으로 전환
-                  }
-                  <div
-                    className={`absolute inset-0 flex items-center justify-center gap-2 text-red-600 font-bold invisible group-hover:visible ${!isDesktopOpen ? 'bg-red-100 rounded-full' : ''}`}
-                  >
-                    <MdLogout
-                      className={`${isDesktopOpen ? 'w-5 h-5' : 'w-6 h-6'} shrink-0`}
-                    />
+                  <div className="absolute inset-0 flex items-center justify-center gap-2 text-red-600 font-bold invisible group-hover:visible">
+                    <MdLogout className="w-5 h-5 shrink-0" />
                     <span
-                      className={`text-sm ${isDesktopOpen ? 'block' : 'hidden'}`}
+                      className={`block text-sm ${isDesktopOpen ? 'block' : 'hidden'}`}
                     >
                       Logout
                     </span>
@@ -944,22 +932,18 @@ const Navbar = () => {
             ) : (
               <div className="auth-warpper flex justify-center w-full login-btn">
                 {isDesktopOpen ? (
-                  <GoogleOAuthProvider clientId={googleClientId}>
-                    <div className="w-full px-4">
-                      <GoogleLogin
-                        onSuccess={handleLoginSuccess}
-                        onError={handleLoginError}
-                        width="100%"
-                      />
-                      <button className="flex justify-center items-center gap-2 bg-gray-300 text-gray-500 py-3 px-4 rounded-md w-full mt-2 whitespace-nowrap">
-                        <FcGoogle className="w-5 h-5" />
-                        <span className="text-sm">Google Login</span>
-                      </button>
-                    </div>
-                  </GoogleOAuthProvider>
+                  <div className="w-full px-4">
+                    <button
+                      onClick={() => googleLogin()}
+                      className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md w-full whitespace-nowrap shadow-md hover:bg-white transition-all font-medium"
+                    >
+                      <FcGoogle className="w-5 h-5" />
+                      <span className="text-sm">Google Login</span>
+                    </button>
+                  </div>
                 ) : (
                   <button
-                    onClick={() => setIsDesktopOpen(true)}
+                    onClick={() => googleLogin()}
                     className="bg-gray-300 w-10 h-10 flex justify-center items-center rounded-full hover:bg-white transition-colors mx-auto"
                     title="Login"
                   >
