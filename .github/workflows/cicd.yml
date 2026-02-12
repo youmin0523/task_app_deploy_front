@@ -1,0 +1,36 @@
+name: CICD
+
+# 이벤트가 실행될 workflow 정의
+on:
+  push:
+    branches:
+      - main
+
+# 작업 정의(jobs): build, deploy
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.VITE_AUTH_CLIENT_ID }}" > .env
+      - name: Sign in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker Image
+        run: docker build -t youminsu/task_app_front_deploy .
+      - name: Push Docker Image
+        run: docker push youminsu/task_app_front_deploy:latest
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull youminsu/task_app_front_deploy:latest
+      - name: Delete Existing Container
+        run: docker rm -f task-container
+      - name: Run container
+        run: docker run -d -p 80:80 --name task-container youminsu/task_app_front_deploy
