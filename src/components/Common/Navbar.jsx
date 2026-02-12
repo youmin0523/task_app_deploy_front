@@ -78,7 +78,7 @@ const Navbar = () => {
   const handleToggleCompleted = async (e, task) => {
     e.stopPropagation(); // 부모 클릭 이벤트 전파 방지
     const updateData = {
-      itemId: task._id,
+      itemId: task?._id,
       isCompleted: true, // 바로 완료 처리
     };
 
@@ -103,7 +103,7 @@ const Navbar = () => {
   const handleToggleImportant = async (e, task) => {
     e.stopPropagation();
     const updateData = {
-      _id: task._id,
+      _id: task?._id,
       title: task.title,
       description: task.description,
       date: task.date,
@@ -325,7 +325,7 @@ const Navbar = () => {
                   <ul className="flex flex-col gap-2 max-h-[240px] overflow-y-auto custom-scrollbar pr-1">
                     {todaysTasks.map((task) => (
                       <li
-                        key={task._id}
+                        key={task?._id}
                         className="group/item flex items-center justify-between p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all cursor-pointer border border-transparent hover:border-gray-600"
                         onClick={() => handleOpenDetail(task)}
                       >
@@ -393,7 +393,7 @@ const Navbar = () => {
                   <ul className="flex flex-col gap-2 max-h-[240px] overflow-y-auto custom-scrollbar pr-1">
                     {tomorrowsTasks.map((task) => (
                       <li
-                        key={task._id}
+                        key={task?._id}
                         className="group/item flex items-center justify-between p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all cursor-pointer border border-transparent hover:border-gray-600"
                         onClick={() => handleOpenDetail(task)}
                       >
@@ -638,7 +638,7 @@ const Navbar = () => {
                   <ul className="flex flex-col gap-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
                     {todaysTasks?.map((task) => (
                       <li
-                        key={task._id}
+                        key={task?._id}
                         className="group flex items-center justify-between p-2 rounded-md bg-gray-800 hover:bg-gray-700 transition-all cursor-pointer border border-transparent hover:border-gray-600 shrink-0"
                         onClick={() => handleOpenDetail(task)}
                       >
@@ -703,7 +703,7 @@ const Navbar = () => {
                       <ul className="flex flex-col gap-2 max-h-[240px] overflow-y-auto custom-scrollbar pr-1">
                         {todaysTasks.map((task) => (
                           <li
-                            key={task._id}
+                            key={task?._id}
                             className="group/item flex items-center justify-between p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all cursor-pointer border border-transparent hover:border-gray-600"
                             onClick={() => handleOpenDetail(task)}
                           >
@@ -774,7 +774,7 @@ const Navbar = () => {
                   <ul className="flex flex-col gap-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
                     {tomorrowsTasks?.map((task) => (
                       <li
-                        key={task._id}
+                        key={task?._id}
                         className="group flex items-center justify-between p-2 rounded-md bg-gray-800 hover:bg-gray-700 transition-all cursor-pointer border border-transparent hover:border-gray-600 shrink-0"
                         onClick={() => handleOpenDetail(task)}
                       >
@@ -839,7 +839,7 @@ const Navbar = () => {
                       <ul className="flex flex-col gap-2 max-h-[240px] overflow-y-auto custom-scrollbar pr-1">
                         {tomorrowsTasks.map((task) => (
                           <li
-                            key={task._id}
+                            key={task?._id}
                             className="group/item flex items-center justify-between p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all cursor-pointer border border-transparent hover:border-gray-600"
                             onClick={() => handleOpenDetail(task)}
                           >
