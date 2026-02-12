@@ -1,4 +1,5 @@
 const DOMAIN = 'https://backend.youmin.site';
+// TEST
 
 const GET_TASKS_API_URL = `${DOMAIN}/get_tasks`;
 const POST_TASK_API_URL = `${DOMAIN}/post_task`;
