@@ -8,6 +8,8 @@ import { fetchGetItem } from '../../redux/slices/apiSlice';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import LoadingSkeleton from './LoadingSkeleton';
+import { useGoogleLogin } from '@react-oauth/google';
+import { login } from '../../redux/slices/authSlice';
 
 const ItemPanel = ({ pageTitle, filteredCompleted, filteredImportant }) => {
   const dispatch = useDispatch();
@@ -30,6 +32,34 @@ const ItemPanel = ({ pageTitle, filteredCompleted, filteredImportant }) => {
   // Get Item Data
   const getTasksData = useSelector((state) => state.api.getItemData);
   // console.log(getTasksData);
+
+  // //* [Added Code] ItemPanel 전용 구글 로그인 핸들러
+  const handleLoginSuccess = async (tokenResponse) => {
+    try {
+      console.log('[DEBUG] Token Response:', tokenResponse);
+      const response = await fetch(
+        'https://www.googleapis.com/oauth2/v3/userinfo',
+        {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        },
+      );
+      const userInfo = await response.json();
+      console.log('[DEBUG] Fetched User Info:', userInfo);
+
+      // //* [Critical Fix] userInfo에 sub가 없을 경우를 대비해 id 필드 등 확인
+      if (userInfo) {
+        dispatch(login({ authData: userInfo }));
+        console.log('[DEBUG] Dispatching login with userInfo');
+      }
+    } catch (error) {
+      console.error('Google Login Info Fetch Error In ItemPanel: ', error);
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleLoginSuccess,
+    onError: (error) => console.log('Google Login Failed In ItemPanel:', error),
+  });
 
   useEffect(() => {
     if (!userKey) return;
@@ -100,8 +130,11 @@ const ItemPanel = ({ pageTitle, filteredCompleted, filteredImportant }) => {
         </div>
       ) : (
         <div className="login-message w-full h-full flex items-center justify-center">
-          <button className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-2 px-4 rounded-md">
-            <span className="text-sm font-semibold">
+          <button
+            onClick={() => googleLogin()}
+            className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-6 rounded-md hover:bg-white transition-all shadow-md group border border-gray-400"
+          >
+            <span className="text-sm font-bold tracking-tight">
               로그인이 필요한 서비스입니다.
             </span>
           </button>
