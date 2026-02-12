@@ -1,6 +1,11 @@
 # Build React App
 FROM node:alpine3.18 as build
 WORKDIR /app
+
+# //* [Added Code] 빌드 타임 환경 변수 수신 설정
+ARG VITE_AUTH_CLIENT_ID
+ENV VITE_AUTH_CLIENT_ID=$VITE_AUTH_CLIENT_ID
+
 COPY package*.json .
 RUN npm install
 COPY . .
